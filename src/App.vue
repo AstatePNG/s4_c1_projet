@@ -16,12 +16,11 @@ function updateText(event) {
           name="post"
           id="post"
           placeholder="Quelles sont les dernières nouvelles mon brave ?"
-          v-bind:value="text"
-          v-on:input="updateText"
+          :value="text"
+          @input="updateText"
         >
-          <!-- v-bind permet la liaison entre la valeur de la variable js et la variable html, de js vers html -->
-          <!-- input appelle une fonction à chaque input (observateur), cela permet la liaison de html vers js -->
-          <!-- pour que la chaine de caractères soit considérer comme un nom js, on lui ajoute v-on -->
+          <!-- :value est un abregé de v-bind:value -->
+          <!-- @input est un abregé de v-on:input -->
         </textarea>
         <button type="submit">>>></button>
       </form>
