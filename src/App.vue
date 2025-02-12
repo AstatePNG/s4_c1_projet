@@ -1,27 +1,33 @@
 <script setup>
 import { ref } from "vue";
 
-let text = ref(""); // ref permet à la variable de se mettre automatiquement à jour dans le HTML
+const text = ref(""); // ref permet à la variable de se mettre automatiquement à jour dans le HTML
+const posts = ref([]);
+
+function addPost() {
+  posts.value.push(text.value);
+  text.value = "";
+}
 </script>
 
 <template>
   <main>
     <div class="container">
-      <form class="card">
+      <form class="card" @submit.prevent="addPost">
         <textarea
           name="post"
           id="post"
           placeholder="Quelles sont les dernières nouvelles mon brave ?"
           v-model="text"
         >
-          <!-- v-model est une directive vue permettant à la fois la liaison :value et la liaison @input sur la variable indiquée -->
         </textarea>
         <button type="submit">>>></button>
       </form>
 
-      <p>
-        {{ text }}
-        <!-- les doubles accolades indiquent l'utilisation de la valeur de la variable js "text"-->
+      <p v-for="(post, index) in posts" :key="index">
+        <!-- la directive v-for permet de faire un foreach -->
+        <!-- index devient la clé correspondant à chaque post de façon unique -->
+        {{ post }}
       </p>
     </div>
   </main>
