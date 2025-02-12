@@ -2,10 +2,6 @@
 import { ref } from "vue";
 
 let text = ref(""); // ref permet à la variable de se mettre automatiquement à jour dans le HTML
-
-function updateText(event) {
-  text.value = event.target.value;
-}
 </script>
 
 <template>
@@ -16,11 +12,9 @@ function updateText(event) {
           name="post"
           id="post"
           placeholder="Quelles sont les dernières nouvelles mon brave ?"
-          :value="text"
-          @input="updateText"
+          v-model="text"
         >
-          <!-- :value est un abregé de v-bind:value -->
-          <!-- @input est un abregé de v-on:input -->
+          <!-- v-model est une directive vue permettant à la fois la liaison :value et la liaison @input sur la variable indiquée -->
         </textarea>
         <button type="submit">>>></button>
       </form>
