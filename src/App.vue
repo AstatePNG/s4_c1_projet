@@ -5,7 +5,7 @@ const text = ref(""); // ref permet à la variable de se mettre automatiquement 
 const posts = ref([]);
 
 function addPost() {
-  posts.value.push(text.value);
+  posts.value.unshift(text.value);
   text.value = "";
 }
 </script>
@@ -24,11 +24,11 @@ function addPost() {
         <button type="submit">>>></button>
       </form>
 
-      <p v-for="(post, index) in posts" :key="index">
-        <!-- la directive v-for permet de faire un foreach -->
-        <!-- index devient la clé correspondant à chaque post de façon unique -->
-        {{ post }}
-      </p>
+      <article v-for="(post, index) in posts" :key="index" class="card">
+        <p>
+          {{ post }}
+        </p>
+      </article>
     </div>
   </main>
 </template>
@@ -74,5 +74,10 @@ button {
   font-size: 1rem;
   height: 40px;
   padding: 0 1rem;
+}
+
+article {
+  padding: 0.75rem 1.5rem;
+  overflow: hidden;
 }
 </style>
