@@ -1,134 +1,95 @@
 <script setup>
 import { ref, computed } from "vue";
+import PostCard from "@/components/PostCard.vue";
 
-const text = ref(""); // ref permet à la variable de se mettre automatiquement à jour dans le HTML
-const trimmedText = computed(() => text.value.trim()); // computed fait comme ref mais pour les variables nécessitant un traitement
+const text = ref("");
+const trimmedText = computed(() => text.value.trim());
 
 const posts = ref([]);
-const sortedPost = computed(() =>
-  posts.value.sort(function (a, b) {
-    return b.createdAt - a.createdAt;
-  }),
+const sortedPosts = computed(() =>
+  posts.value.toSorted((postA, postB) => postB.createdAt - postA.createdAt),
 );
 
 function addPost() {
   const newPost = {
-    id: Math.random().toString(36).substring(2),
-    content: trimmedText.value,
-    createdAt: new Date(),
-    author: {
+    post: {
       id: Math.random().toString(36).substring(2),
-      username: "Larry",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8J5UjvXPi7QQ_reilE_xbSlKTYK5Q0ncI8w&s",
+      content: trimmedText.value,
+      createdAt: new Date(),
+      liked: false,
+    },
+    author: {
+      id: Math.random().toString().substring(2),
+      username: "HelloClass",
+      avatarUrl: "https://medias.tendanceouest.com/photos/galeries/415231/9052-tab.jpg",
     },
   };
+
   posts.value.unshift(newPost);
   text.value = "";
+
+  setTimeout(() => {
+    const postElement = document.querySelector("article:first-of-type");
+    if (postElement) {
+      postElement.style.transition = "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
+      postElement.style.transform = "scale(0.4)";
+
+      setTimeout(() => {
+        postElement.style.transform = "scale(1)";
+      }, 100);
+    }
+  }, 0);
+}
+
+function deletePost(postId) {
+  posts.value = posts.value.filter((post) => post.post.id !== postId);
+}
+
+function likePost(postId) {
+  posts.value.find((post) => post.post.id === postId).liked = !posts.value.find(
+    (post) => post.post.id === postId,
+  ).liked;
+}
+
+function respondToPost(postId) {
+  const post = posts.value.find((post) => post.post.id === postId);
 }
 </script>
 
 <template>
   <main>
     <div class="container">
+      <h1>Fil d'actualité</h1>
       <form class="card" @submit.prevent="addPost">
         <textarea
           name="post"
           id="post"
+          placeholder="Quoi de neuf ?"
           maxlength="200"
-          placeholder="Quelles sont les dernières nouvelles mon brave ?"
           v-model="text"
-        >
-        </textarea>
-        <button type="submit" :disabled="!trimmedText">>>></button>
+        ></textarea>
+        <button type="submit" :disabled="!trimmedText">Publier</button>
       </form>
+      <p v-if="!posts.length">Pas de post pour le moment.</p>
 
-      <p v-if="!posts.length">Pas de posts pour le moment.</p>
-
-      <article v-for="(post, index) in sortedPost" :key="index" class="card">
-        <div class="post-header">
-          <img
-            :src="post.author.avatarUrl"
-            alt="avatar de l'utilisateur"
-            width="36"
-            height="36"
-            class="user-avatar"
-          />
-          <a>{{ post.author.username }}</a>
-        </div>
-        <p>
-          {{ post.content }}
-        </p>
-      </article>
+      <PostCard
+        v-for="(post, index) in sortedPosts"
+        :key="index"
+        :post="post"
+        @delete="deletePost"
+        @answer="respondToPost"
+        @like="likePost"
+      />
     </div>
   </main>
 </template>
 
-<style scoped>
-.container {
-  height: 100vh;
-  margin: 0 auto;
-  max-width: 640px;
-}
-.card {
-  background-color: var(--color-bg-secondary);
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  margin-bottom: 1rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
-  padding: 1rem 1.5rem;
-  width: 100%;
-}
-textarea {
-  background: none;
-  border: none;
-  color: var(--color-text-primary);
-  flex: 1;
-  margin-bottom: 1rem;
-  outline: none;
-  padding: 0.5rem 0;
-  resize: none;
-  field-sizing: content;
-}
-button {
-  align-self: flex-end;
-  background: none;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  font-size: 1rem;
-  height: 40px;
-  padding: 0 1rem;
-}
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-article {
-  padding: 0.75rem 1.5rem;
-  overflow: hidden;
-}
-
-article p {
-  white-space: pre-wrap;
-}
-
-.user-avatar {
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-</style>
+/* function addPost() { const newId = Math.random().toString(36).substring(2); const newPost = {
+post: { id: newId, content: trimmedText.value, createdAt: new Date(), }, author: { id:
+Math.random().toString().substring(2), username: "HelloClass", avatarUrl:
+"https://medias.tendanceouest.com/photos/galeries/415231/9052-tab.jpg", }, };
+posts.value.unshift(newPost); text.value = ""; // Add glowing animation setTimeout(() => { const
+postElement = document.querySelector('article:first-of-type'); if (postElement) {
+postElement.style.transition = 'box-shadow 0.3s ease-in-out'; postElement.style.boxShadow = '0 0
+20px rgb(70, 73, 224)'; setTimeout(() => { postElement.style.boxShadow = 'none'; }, 1500); } }, 0);
+} */
