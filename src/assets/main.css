@@ -338,11 +338,10 @@ article p {
   transition: 0.5s;
 }
 
-/*
 #avatar:hover {
   scale: 2;
   width: 50%;
-}*/
+}
 
 .delete {
   cursor: pointer;
@@ -362,4 +361,8 @@ article p {
 .content {
   margin-bottom: 0.5rem;
   padding: 0.5rem 0;
+}
+
+.author {
+  color: var(--color-text-primary);
 }
