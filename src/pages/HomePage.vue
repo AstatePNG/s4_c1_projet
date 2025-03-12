@@ -54,12 +54,15 @@ function respondToPost(postId) {
   const post = posts.value.find((post) => post.id === postId);
 }
 
+const loading = ref(false);
 const apiPosts = ref([]);
 
 function fetchPosts() {
+  loading.value = true;
   const result = fetch("https://posts-crud-api.vercel.app/posts");
   result.then((response) => response.json()).then((data) => {
     apiPosts.value = data;
+    loading.value = false;
   });
 }
 
@@ -82,7 +85,10 @@ fetchPosts();
         <ChevronDoubleRightIcon />
       </button>
       </form>
-      <p v-if="!apiPosts.length">Pas de post pour le moment.</p>
+
+      <p v-if="loading">Chargement...</p>
+
+      <p v-else-if="!apiPosts.length">Pas de post pour le moment.</p>
 
       <PostCard
         v-for="(post, index) in apiPosts"
